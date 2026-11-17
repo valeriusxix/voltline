@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="description" content="Voltline — a live 3D EV factory dashboard built with Three.js.">
+<meta name="theme-color" content="#10B981">
+<title>Voltline — Live EV Factory</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div id="scene"></div>
+
+<div id="loader"><div class="ld"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13.2 2 4.5 13.4h6.3L9.9 22l8.6-11.6h-6.2z"/></svg></div>Bringing the line online…</div></div>
+
+<header id="topbar" class="glass">
+  <div class="brand">
+    <div class="mark"><svg viewBox="0 0 24 24"><path d="M13.2 2 4.5 13.4h6.3L9.9 22l8.6-11.6h-6.2z"/></svg></div>
+    <div><div class="brand-name">Voltline</div><div class="brand-sub"><span class="live-dot"></span>Plant 01 · Gigaline A</div></div>
+  </div>
+  <div class="search menu" id="searchBox">
+    <svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="search" type="text" placeholder="Search VIN, AGV, robot, station…" autocomplete="off" spellcheck="false" />
+    <div class="dropdown glass" id="searchResults"></div>
+  </div>
+  <nav class="seg" id="areas"></nav>
+  <div class="tb-right">
+    <div class="menu" id="weatherMenu">
+      <button class="chip" id="weatherBtn" aria-label="Weather"><span id="weatherIcon"></span><span id="weatherName">Clear</span><svg class="i chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="dropdown glass" id="weatherList"></div>
+    </div>
+    <div class="clock"><span id="clock">--:--:--</span><small id="shift">Shift B</small></div>
+    <div class="menu" id="alertMenu">
+      <button class="icon-btn" id="alertBtn" aria-label="Alerts"><svg class="i" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="badge" id="alertBadge">0</span></button>
+      <div class="dropdown glass alerts" id="alertList"></div>
+    </div>
+    <button class="icon-btn" id="dnBtn" aria-label="Toggle day and night"></button>
+    <div class="user"><div class="avatar">AO</div><div class="user-meta">Ada Okafor<span>Shift lead · Line A</span></div></div>
+  </div>
+</header>
+<div id="areasM" class="glass"><div class="seg" id="areas2"></div></div>
+
+<section id="kpis">
+  <div class="kpi glass">
+    <div class="label">Cars built today <i id="kBuiltPlan"></i></div>
+    <div class="value" id="kBuilt">0</div>
+    <div class="sub"><span id="kBuiltDelta" class="delta"></span><span>since 06:00</span></div>
+    <svg class="spark" id="sBuilt" viewBox="0 0 180 28" preserveAspectRatio="none"></svg>
+  </div>
+  <div class="kpi glass">
+    <div class="label">Line takt time <i>×4 sim</i></div>
+    <div class="value" id="kTakt">52.0<small>s</small></div>
+    <div class="sub"><span id="kTaktDelta" class="delta"></span><span>target 52.0 s</span></div>
+    <svg class="spark" id="sTakt" viewBox="0 0 180 28" preserveAspectRatio="none"></svg>
+  </div>
+  <div class="kpi glass">
+    <div class="label">First pass yield <i id="kFpyN"></i></div>
+    <div class="value" id="kFpy">0<small>%</small></div>
+    <div class="sub"><span id="kFpyDelta" class="delta"></span><span>goal 96.0%</span></div>
+    <svg class="spark" id="sFpy" viewBox="0 0 180 28" preserveAspectRatio="none"></svg>
+  </div>
+</section>
+
+<aside id="detail" class="glass">
+  <div id="dHead"></div>
+  <div id="dBody"></div>
+  <div class="d-actions" id="dActions">
+    <button class="btn" id="btnFollow"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg><span>Follow</span></button>
+    <button class="btn" id="btnClose"><svg class="i" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>Close</button>
+  </div>
+</aside>
+
+<section id="bottom">
+  <div id="tracker" class="glass">
+    <div class="tr-head">
+      <div><div class="eyebrow" id="trTitle">Build tracker</div><div class="tr-vin" id="trVin">—</div></div>
+      <div class="tr-meta" id="trMeta"></div>
+    </div>
+    <div class="steps" id="trSteps"></div>
+    <div class="tr-prog"><em id="trProg" style="width:0%"></em></div>
+  </div>
+  <div id="tablePanel" class="glass">
+    <div class="tabs"><div class="seg" id="tabs"></div><div class="hint">Click a row to fly to it</div></div>
+    <div class="tbl"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+  </div>
+</section>
+
+<button id="dataBtn" class="glass"><svg class="i" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span>Line data</span></button>
+<div id="selLabel" class="glass"></div>
+<div id="hint" class="glass"><span><b>Drag</b> pan</span><span><b>Right-drag</b> rotate</span><span><b>Scroll</b> zoom</span><span><b>Click</b> anything to inspect</span></div>
+<div id="err" class="glass"></div>
+
+<script src="js/boot.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

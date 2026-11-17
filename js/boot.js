@@ -1,0 +1,2 @@
+setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.contains('hide')){const el=document.getElementById('err');el.style.display='block';el.textContent='Still loading… Voltline needs Three.js from cdn.jsdelivr.net and a browser with WebGL.';}},15000);
+window.addEventListener('error',e=>{const el=document.getElementById('err');if(el){el.style.display='block';el.textContent='Voltline could not start: '+(e.message||'unknown error')+'. Three.js loads from cdn.jsdelivr.net, so an internet connection is needed.';}});

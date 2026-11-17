@@ -1,0 +1,10 @@
+{
+  "name": "voltline",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Voltline: a live 3D EV factory dashboard built with Three.js. Static site, no build step.",
+  "scripts": {
+    "dev": "npx --yes serve@14 . -l 3000",
+    "start": "npm run dev"
+  }
+}
